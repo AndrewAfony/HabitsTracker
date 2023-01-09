@@ -23,7 +23,7 @@ abstract class AbstractUiTest {
     @Before
     fun setup() {
         val context = ApplicationProvider.getApplicationContext<App>()
-        val preferences = PreferencesProvider.Debug().create(context)
+        val preferences = PreferencesProvider.Factory(BuildConfig.DEBUG).create(context)
         init(preferences)
         activityScenario.launch(Intent(context, MainActivity::class.java))
     }
