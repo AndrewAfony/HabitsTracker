@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">HabitsTracker</string>
+    <string name="days_without_bad_habits">day(s) without bad habits</string>
 </resources>
