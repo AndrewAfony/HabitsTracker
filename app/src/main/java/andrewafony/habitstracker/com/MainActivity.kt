@@ -14,20 +14,16 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val preferences = getSharedPreferences("main", Context.MODE_PRIVATE)
-        val time = preferences.getLong("time", -1)
-        if (time == -1L) {
-            preferences.edit().putLong("time", System.currentTimeMillis()).apply()
-            binding.daysNumber.text = "0"
-        } else {
-            val diff = (System.currentTimeMillis() - time) / 1000
-            val days = diff / (24 * 3600)
-            binding.daysNumber.text = days.toString()
+        val viewModel = (application as ProvideViewModel).provideViewModel()
+
+        viewModel.observe(this) { state ->
+            state.apply(binding.daysNumber, binding.buttonReset)
         }
 
         binding.buttonReset.setOnClickListener {
-            preferences.edit().putLong("time", System.currentTimeMillis()).apply()
-            binding.daysNumber.text = "0"
+            viewModel.reset()
         }
+
+        viewModel.init(savedInstanceState == null)
     }
 }

@@ -1,6 +1,7 @@
 package andrewafony.habitstracker.com
 
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 
 interface MainCommunication {
@@ -16,14 +17,14 @@ interface MainCommunication {
 
     interface Mutable: Put, Observe
 
-//    class Base(private val liveData: MutableLiveData<UiState> = MutableLiveData()): Mutable {
-//
-//        override fun put(value: UiState) {
-//            liveData.value = value
-//        }
-//
-//        override fun observe(owner: LifecycleOwner, observer: Observer<UiState>) {
-//            liveData.observe(owner, observer)
-//        }
-//    }
+    class Base(private val liveData: MutableLiveData<UiState> = MutableLiveData()): Mutable {
+
+        override fun put(value: UiState) {
+            liveData.value = value
+        }
+
+        override fun observe(owner: LifecycleOwner, observer: Observer<UiState>) {
+            liveData.observe(owner, observer)
+        }
+    }
 }
