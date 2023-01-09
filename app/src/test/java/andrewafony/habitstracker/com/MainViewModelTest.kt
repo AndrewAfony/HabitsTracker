@@ -9,7 +9,7 @@ class MainViewModelTest {
 
     @Test
     fun test_zero_days() {
-        val repository = FakeRepository(0)
+        val repository = FakeRepository.Base(0)
         val communication = FakeMainCommunication.Base()
         val viewModel = MainViewModel(repository, communication)
         viewModel.init(isFirstRun = true)
@@ -21,7 +21,7 @@ class MainViewModelTest {
 
     @Test
     fun test_n_days() {
-        val repository = FakeRepository(5)
+        val repository = FakeRepository.Base(5)
         val communication = FakeMainCommunication.Base()
         val viewModel = MainViewModel(repository, communication)
         viewModel.init(isFirstRun = true)
@@ -30,12 +30,37 @@ class MainViewModelTest {
         viewModel.init(isFirstRun = false)
         assertEquals(true, communication.checkCalledCount(1))
     }
+
+    @Test
+    fun test_reset() {
+        val repository = FakeRepository.Base(5)
+        val communication = FakeMainCommunication.Base()
+        val viewModel = MainViewModel(repository, communication)
+        viewModel.init(isFirstRun = true)
+        assertEquals(true, communication.checkCalledCount(1))
+        assertEquals(true, communication.isSame(UiState.NDays(days = 5)))
+        viewModel.reset()
+        assertEquals(true, repository.resetCalledCount(1))
+        assertEquals(true, communication.checkCalledCount(2))
+        assertEquals(true, communication.isSame(UiState.ZeroDays))
+    }
 }
 
-private class FakeRepository(private val days: Int) : MainRepository {
+private interface FakeRepository: MainRepository {
 
-    override fun daysPastFromFirstLaunch(): Int {
-        return days
+    fun resetCalledCount(count: Int): Boolean
+
+    class Base(private val days: Int) : FakeRepository {
+
+        private var resetCalledCount = 0
+
+        override fun daysPastFromFirstLaunch(): Int = days
+
+        override fun reset() {
+            resetCalledCount++
+        }
+
+        override fun resetCalledCount(count: Int): Boolean = resetCalledCount == count
     }
 }
 
@@ -53,7 +78,6 @@ private interface FakeMainCommunication : MainCommunication.Mutable {
         override fun checkCalledCount(count: Int): Boolean = count == callCount
 
         override fun isSame(uiState: UiState): Boolean = state.equals(uiState)
-
 
         override fun put(value: UiState) {
             callCount++
