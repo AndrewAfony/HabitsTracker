@@ -1,7 +1,6 @@
 package andrewafony.habitstracker.com
 
 import andrewafony.habitstracker.com.databinding.ActivityMainBinding
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 
